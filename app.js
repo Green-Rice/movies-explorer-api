@@ -4,9 +4,11 @@ const express = require('express');
 const { errors } = require('celebrate');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
+const cors = require('cors');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const router = require('./routes');
 const errorMiddleware = require('./middlewares/error');
+const limiter = require('./middlewares/limiter');
 
 const { PORT = 3000, NODE_ENV, DATA_BASE_URL } = process.env;
 
@@ -17,12 +19,14 @@ mongoose.connect(
     : 'mongodb://127.0.0.1:27017/bitfilmsdb',
 );
 
+app.use(cors());
+
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(requestLogger);
-
+app.use(limiter);
 app.use(router);
 
 app.use(errorLogger);
