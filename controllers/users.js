@@ -19,7 +19,6 @@ module.exports.signUp = (req, res, next) => {
     .then((user) => res.status(201).send({
       email,
       name,
-      password,
       _id: user._id,
     }))
     .catch((err) => {
